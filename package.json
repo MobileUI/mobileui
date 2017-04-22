@@ -1,0 +1,40 @@
+{
+  "name": "mobileui",
+  "version": "0.1.0",
+  "description": "MobileUI is a simple and easy NPM package to install UI Components for web mobile apps using HTML, CSS and JavaScript.",
+  "main":  "./bin/mobileui",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --timeout 120000 --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MobileUI/mobileui.git"
+  },
+  "author": "Fabio Rogerio SJ <fabio.rogerio.sj@gmail.com> (http://fabiorogeriosj.com.br)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MobileUI/mobileui/issues"
+  },
+  "keywords": [
+    "app",
+    "prototypes",
+    "Mobile UI",
+    "framework",
+    "mobile",
+    "mobileui"
+  ],
+  "homepage": "https://mobileui.github.io",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "request": "^2.75.0",
+    "minimist": "^1.2.0"
+  },
+  "bin": {
+    "mobileui": "./bin/mobileui"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "should": "^11.1.1"
+  }
+}

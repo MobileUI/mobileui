@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+
+var colors = require('colors');
+var fs = require('fs');
+var argv = require('minimist')(process.argv.slice(2));
+var request = require('request');
+var packageJson = require('../package.json');
+
+global.repoComponents = 'https://raw.githubusercontent.com/MobileUI/components/master/dist/';
+
+//commands
+var command_install = require('./command/command_install');
+
+var getCommands = function (){
+	for(i in argv._){
+		if(!argv[argv._[i]]){
+			argv[argv._[i]] = true;
+		}
+	}
+	return argv;
+}
+
+global.commands = getCommands();
+
+(function mockapp() {
+
+
+	var showIntro = function (){
+		console.log("");
+		console.log("   __  __       _     _ _      _   _ ___ ");
+		console.log("  |  \\/  | ___ | |__ (_) | ___| | | |_ _|");
+		console.log("  | |\\/| |/ _ \\| '_ \\| | |/ _ \\ | | || | ");
+		console.log("  | |  | | (_) | |_) | | |  __/ |_| || | ");
+		console.log("  |_|  |_|\\___/|_.__/|_|_|\\___|\\___/|___|");
+		console.log("");
+		console.log("\n_______________________________________________\n".green);
+		console.log("  Version installed: ", packageJson.version);
+		console.log("_______________________________________________\n".green);
+	}
+
+	if(!commands._.length){
+			showIntro();
+	} else {
+		if(commands.new){
+			command_new.run()
+		} else if(commands.preview){
+			command_preview.run()
+		} else if(commands.build){
+			command_build.run()
+		} else if(commands.run){
+			command_run.run()
+		} else if(commands.delete){
+			command_delete.run()
+		} else if(commands.docs){
+			command_docs.run()
+		} else if(commands.bugs){
+			command_bugs.run()
+		} else if(commands.config){
+			command_config.run()
+		} else if(commands.add){
+			command_add.run()
+		} else if(commands.icons){
+			command_icons.run()
+		} else if(commands.install){
+			command_install.run()
+		} else {
+			console.log(" ERROR: ".bgRed, "Command not exist!")
+		}
+	}
+
+})();
