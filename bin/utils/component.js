@@ -43,12 +43,29 @@ module.exports = {
         var msg = "> File "+comp.name+".min.css downloaded";
         console.log(msg.grey)
       }
-      request(repoComponents+comp.name+'.js', function (error, response, body) {
+      request(repoComponents+comp.name+'.min.js', function (error, response, body) {
         if(response && response.statusCode === 200) {
           js=true;
-          let fd = fs.openSync("./www/mobileui/mobileui.js", 'w')
-          fs.writeSync(fd, "\n/*component-"+comp.name+"*/"+body)
-          console.log("> File "+comp.name+'.js'+" downloaded".grey)
+          if (!fs.existsSync("./www/mobileui")){
+              fs.mkdirSync("./www/mobileui");
+          }
+          if(!fs.existsSync("./www/mobileui/mobileui.js")) {
+            fs.writeFileSync("./www/mobileui/mobileui.js", '')
+          }
+
+          var filejs = fs.readFileSync("./www/mobileui/mobileui.js", "utf8");
+          if(filejs.indexOf("/*component-"+comp.name+"*/") >= 0) {
+            var replace = "/*component-"+comp.name+"*/" + filejs.split("/*component-"+comp.name+"*/")[1].split('\n')[0]
+            filejs = filejs.replace(replace,'')
+          }
+          if(comp.name === 'base') {
+            filejs = "/*component-"+comp.name+"*/"+body+"\n" + filejs
+          } else {
+            filejs += "/*component-"+comp.name+"*/"+body+"\n"
+          }
+          fs.writeFileSync("./www/mobileui/mobileui.js",filejs)
+          var msg = "> File "+comp.name+".min.js downloaded";
+          console.log(msg.grey)
         }
         if(!css && !js) {
           callback('The sources this component not exist.')
@@ -57,11 +74,11 @@ module.exports = {
           var changeIndex = false;
           if(css && index && index.indexOf('mobileui/style.css') < 0){
             changeIndex=true
-            index = index.replace('</head>','    <link rel="stylesheet" type="text/css" href="mobileui/style.css">\n</head>')
+            index = index.replace('</head>','    <link rel="stylesheet" type="text/css" href="mobileui/style.css">\n    </head>')
           }
           if(js && index && index.indexOf('mobileui/mobileui.js') < 0){
             changeIndex=true
-            index = index.replace('<script type="text/javascript" src="cordova.js"></script>','<script type="text/javascript" src="mobileui/mobileui.js"></script>\n<script type="text/javascript" src="cordova.js"></script>')
+            index = index.replace('<script type="text/javascript" src="cordova.js"></script>','<script type="text/javascript" src="cordova.js"></script>\n        <script type="text/javascript" src="mobileui/mobileui.js"></script>')
           }
           if(changeIndex) {
             fs.writeFileSync("./www/index.html",index)
