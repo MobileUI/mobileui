@@ -1,8 +1,8 @@
 {
   "name": "mobileui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MobileUI is a simple and easy NPM package to install UI Components for web mobile apps using HTML, CSS and JavaScript.",
-  "main":  "./bin/mobileui",
+  "main": "./bin/mobileui",
   "scripts": {
     "test": "./node_modules/.bin/mocha --timeout 120000 --reporter spec"
   },
@@ -26,8 +26,8 @@
   "homepage": "https://mobileui.github.io",
   "dependencies": {
     "colors": "^1.1.2",
-    "request": "^2.75.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "request": "^2.75.0"
   },
   "bin": {
     "mobileui": "./bin/mobileui"
