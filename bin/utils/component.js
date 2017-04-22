@@ -74,7 +74,7 @@ module.exports = {
           var changeIndex = false;
           if(css && index && index.indexOf('mobileui/style.css') < 0){
             changeIndex=true
-            index = index.replace('</head>','    <link rel="stylesheet" type="text/css" href="mobileui/style.css">\n    </head>')
+            index = index.replace('<head>','<head>\n    <link rel="stylesheet" type="text/css" href="mobileui/style.css">')
           }
           if(js && index && index.indexOf('mobileui/mobileui.js') < 0){
             changeIndex=true
