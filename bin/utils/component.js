@@ -88,15 +88,15 @@ module.exports = {
             var totalFiles = comp.files.length;
             var filesDownloaded = 0;
             var download = function(){
-              request(repoComponents+comp.files[filesDownloaded], function (error, response, body) {
-                if(response && response.statusCode === 200) {
-                  if(comp.files[filesDownloaded].split('/').length > 1)
-                  var folder = comp.files[filesDownloaded].split('/')[0]
-                  if (!fs.existsSync("./www/mobileui/"+folder)){
-                      fs.mkdirSync("./www/mobileui/"+folder);
-                  }
-                  fs.writeFileSync("./www/mobileui/"+comp.files[filesDownloaded], body)
+              if(comp.files[filesDownloaded].split('/').length > 1){
+                var folder = comp.files[filesDownloaded].split('/')[0]
+                if (!fs.existsSync("./www/mobileui/"+folder)){
+                    fs.mkdirSync("./www/mobileui/"+folder);
                 }
+              }
+              var req = request(repoComponents+comp.files[filesDownloaded])
+              .pipe(fs.createWriteStream("./www/mobileui/"+comp.files[filesDownloaded]))
+              .on('close', function (err) {
                 filesDownloaded++;
                 if(totalFiles === filesDownloaded) {
                   console.log("> Files dependencies downloaded".grey)
@@ -104,7 +104,7 @@ module.exports = {
                 } else {
                   download();
                 }
-              });
+              })
             }
             download();
           } else {
