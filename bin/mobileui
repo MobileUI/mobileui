@@ -10,6 +10,7 @@ global.repoComponents = 'https://raw.githubusercontent.com/MobileUI/components/m
 
 //commands
 var command_install = require('./command/command_install');
+var command_preview = require('./command/command_preview');
 
 var getCommands = function (){
 	for(i in argv._){
@@ -41,28 +42,10 @@ global.commands = getCommands();
 	if(!commands._.length){
 			showIntro();
 	} else {
-		if(commands.new){
-			command_new.run()
+		if(commands.install){
+			command_install.run()
 		} else if(commands.preview){
 			command_preview.run()
-		} else if(commands.build){
-			command_build.run()
-		} else if(commands.run){
-			command_run.run()
-		} else if(commands.delete){
-			command_delete.run()
-		} else if(commands.docs){
-			command_docs.run()
-		} else if(commands.bugs){
-			command_bugs.run()
-		} else if(commands.config){
-			command_config.run()
-		} else if(commands.add){
-			command_add.run()
-		} else if(commands.icons){
-			command_icons.run()
-		} else if(commands.install){
-			command_install.run()
 		} else {
 			console.log(" ERROR: ".bgRed, "Command not exist!")
 		}
