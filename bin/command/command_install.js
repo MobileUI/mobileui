@@ -1,13 +1,14 @@
 var project = require('../utils/project');
 var component = require('../utils/component');
+var getfont = require('../utils/getfont');
 var request = require('request');
 
 module.exports = {
     run : function (){
       var self = this;
-      if(!project.checkIntoProject()) {
-        return console.log(" ERROR: ".bgRed, "You are not in the folder of a Cordova project.")
-      }
+      // if(!project.checkIntoProject()) {
+      //   return console.log(" ERROR: ".bgRed, "You are not in the folder of a Cordova project.")
+      // }
       if(commands._.length < 2) {
         return console.log(" ERROR: ".bgRed, "You must enter the name of the component.")
       }
@@ -15,13 +16,23 @@ module.exports = {
       var componentName = commands._[indexComponent]
 
       var installComponents = function(){
-        self.install(componentName, function(){
-          indexComponent++;
-          componentName = commands._[indexComponent]
-          if(componentName){
-            installComponents();
+        if(componentName === 'font') {
+          if(commands._.length !== 3){
+            console.log(" ERROR: ".bgRed, "To install a font you need to pass the font name after the font command.")
+            console.log("If you need help see de doc: https://mobileui.github.io/#fonts".grey)
+            return false
           }
-        })
+          var fontName = commands._[2]
+          getfont.install(fontName)
+        } else {
+          self.install(componentName, function(){
+            indexComponent++;
+            componentName = commands._[indexComponent]
+            if(componentName){
+              installComponents();
+            }
+          })
+        }
       }
 
       installComponents();
@@ -29,6 +40,7 @@ module.exports = {
     },
     install: function(componentName, callback){
       var self = this;
+      var headerRequest = { uri: repoComponents+componentName+'.json', rejectUnauthorized: false }
       request(repoComponents+componentName+'.json', function (error, response, body) {
         if(response && response.statusCode === 200) {
           var componentJson = JSON.parse(body);
@@ -67,7 +79,8 @@ module.exports = {
                     installDependency();
                   }
                 } else {
-                  request(repoComponents+compInstallDepName+'.json', function (error, response, body) {
+                  var headerRequest = { uri: repoComponents+compInstallDepName+'.json', rejectUnauthorized: false }
+                  request(headerRequest, function (error, response, body) {
                     if(response && response.statusCode === 200) {
                       var componentJsonDep = JSON.parse(body);
                       component.install(componentJsonDep, function(err){

@@ -4,32 +4,55 @@ var request = require('request');
 module.exports = {
 
   checkInstalled : function (componentName){
-    if(!fs.existsSync("./www/mobileui/style.css")) return false;
-
-    var file = fs.readFileSync("./www/mobileui/style.css", "utf8");
-
-    if(file.indexOf('component-'+componentName) < 0){
-      return false;
-    } else {
-      return true;
+    var folder = ''
+    var dirCSS = ''
+    var dirJS = ''
+    var exist = false
+    if(fs.existsSync("./www")) {
+      folder = "/www"
     }
+    if(fs.existsSync("."+folder+"/mobileui/style.css")) {
+      dirCSS = "."+folder+"/mobileui/style.css"
+    }
+    if(fs.existsSync("."+folder+"/mobileui/mobileui.js")) {
+      dirJS = "."+folder+"/mobileui/mobileui.js"
+    }
+    if(!dirCSS && !dirJS) return false;
 
+    if(dirCSS) {
+      var file = fs.readFileSync(dirCSS, "utf8");
+      if(file.indexOf('component-'+componentName) >= 0){
+        exist=true
+      }
+    }
+    if(dirJS) {
+      var file = fs.readFileSync(dirJS, "utf8");
+      if(file.indexOf('component-'+componentName) >= 0){
+        exist=true
+      }
+    }
+    return exist;
   },
   install: function(comp, callback){
     var self = this;
     var css=false;
     var js=false;
-    request(repoComponents+comp.name+'.min.css', function (error, response, body) {
+    var folder = ''
+    if(fs.existsSync("./www")) {
+      folder = "/www"
+    }
+    var headerRequest = { uri: repoComponents+comp.name+'.min.css', rejectUnauthorized: false }
+    request(headerRequest, function (error, response, body) {
       if(response && response.statusCode === 200) {
         css=true;
-        if (!fs.existsSync("./www/mobileui")){
-            fs.mkdirSync("./www/mobileui");
+        if (!fs.existsSync("."+folder+"/mobileui")){
+            fs.mkdirSync("."+folder+"/mobileui");
         }
-        if(!fs.existsSync("./www/mobileui/style.css")) {
-          fs.writeFileSync("./www/mobileui/style.css", '')
+        if(!fs.existsSync("."+folder+"/mobileui/style.css")) {
+          fs.writeFileSync("."+folder+"/mobileui/style.css", '')
         }
 
-        var style = fs.readFileSync("./www/mobileui/style.css", "utf8");
+        var style = fs.readFileSync("."+folder+"/mobileui/style.css", "utf8");
         if(style.indexOf(".component-"+comp.name) >= 0) {
           var replace = ".component-"+comp.name + style.split(".component-"+comp.name)[1].split('\n')[0]
           style = style.replace(replace,'')
@@ -39,21 +62,22 @@ module.exports = {
         } else {
           style += ".component-"+comp.name+"{display:block}"+body+"\n"
         }
-        fs.writeFileSync("./www/mobileui/style.css",style)
+        fs.writeFileSync("."+folder+"/mobileui/style.css",style)
         var msg = "> File "+comp.name+".min.css downloaded";
         console.log(msg.grey)
       }
-      request(repoComponents+comp.name+'.min.js', function (error, response, body) {
+      var headerRequest = { uri: repoComponents+comp.name+'.min.js', rejectUnauthorized: false }
+      request(headerRequest, function (error, response, body) {
         if(response && response.statusCode === 200) {
           js=true;
-          if (!fs.existsSync("./www/mobileui")){
-              fs.mkdirSync("./www/mobileui");
+          if (!fs.existsSync("."+folder+"/mobileui")){
+              fs.mkdirSync("."+folder+"/mobileui");
           }
-          if(!fs.existsSync("./www/mobileui/mobileui.js")) {
-            fs.writeFileSync("./www/mobileui/mobileui.js", '')
+          if(!fs.existsSync("."+folder+"/mobileui/mobileui.js")) {
+            fs.writeFileSync("."+folder+"/mobileui/mobileui.js", '')
           }
 
-          var filejs = fs.readFileSync("./www/mobileui/mobileui.js", "utf8");
+          var filejs = fs.readFileSync("."+folder+"/mobileui/mobileui.js", "utf8");
           if(filejs.indexOf("/*component-"+comp.name+"*/") >= 0) {
             var replace = "/*component-"+comp.name+"*/" + filejs.split("/*component-"+comp.name+"*/")[1].split('\n')[0]
             filejs = filejs.replace(replace,'')
@@ -63,14 +87,14 @@ module.exports = {
           } else {
             filejs += "/*component-"+comp.name+"*/"+body+"\n"
           }
-          fs.writeFileSync("./www/mobileui/mobileui.js",filejs)
+          fs.writeFileSync("."+folder+"/mobileui/mobileui.js",filejs)
           var msg = "> File "+comp.name+".min.js downloaded";
           console.log(msg.grey)
         }
         if(!css && !js) {
           callback('The sources this component not exist.')
         } else {
-          var index = fs.readFileSync("./www/index.html", "utf8")
+          var index = fs.readFileSync("."+folder+"/index.html", "utf8")
           var changeIndex = false;
           if(css && index && index.indexOf('mobileui/style.css') < 0){
             changeIndex=true
@@ -78,24 +102,30 @@ module.exports = {
           }
           if(js && index && index.indexOf('mobileui/mobileui.js') < 0){
             changeIndex=true
-            index = index.replace('<script type="text/javascript" src="cordova.js"></script>','<script type="text/javascript" src="cordova.js"></script>\n        <script type="text/javascript" src="mobileui/mobileui.js"></script>')
+            if(index.indexOf('cordova.js') < 0){
+              index = index.replace('</body>','<script type="text/javascript" src="mobileui/mobileui.js"></script>\n  </body>')
+            } else {
+              index = index.replace('<script type="text/javascript" src="cordova.js"></script>','<script type="text/javascript" src="cordova.js"></script>\n        <script type="text/javascript" src="mobileui/mobileui.js"></script>')
+            }
           }
           if(changeIndex) {
-            fs.writeFileSync("./www/index.html",index)
-            console.log("> Import of mobileui inserted in ./www/index.html".grey)
+            fs.writeFileSync("."+folder+"/index.html",index)
+            var msg = "> Import of mobileui inserted in ."+folder+"/index.html";
+            console.log(msg.grey)
           }
           if(comp.files && comp.files.length){
             var totalFiles = comp.files.length;
             var filesDownloaded = 0;
             var download = function(){
               if(comp.files[filesDownloaded].split('/').length > 1){
-                var folder = comp.files[filesDownloaded].split('/')[0]
-                if (!fs.existsSync("./www/mobileui/"+folder)){
-                    fs.mkdirSync("./www/mobileui/"+folder);
+                var folderDown = comp.files[filesDownloaded].split('/')[0]
+                if (!fs.existsSync("."+folder+"/mobileui/"+folderDown)){
+                    fs.mkdirSync("."+folder+"/mobileui/"+folderDown);
                 }
               }
-              var req = request(repoComponents+comp.files[filesDownloaded])
-              .pipe(fs.createWriteStream("./www/mobileui/"+comp.files[filesDownloaded]))
+              var headerRequest = { uri: repoComponents+comp.files[filesDownloaded], rejectUnauthorized: false }
+              var req = request(headerRequest)
+              .pipe(fs.createWriteStream("."+folder+"/mobileui/"+comp.files[filesDownloaded]))
               .on('close', function (err) {
                 filesDownloaded++;
                 if(totalFiles === filesDownloaded) {
