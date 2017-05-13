@@ -6,7 +6,11 @@ var http = require('http');
 var serveStatic = require('serve-static');
 
 var DEFAULT_HTTP_PORT = 8080;
-var serve = serveStatic('www', {'index': ['index.html', 'index.htm']});
+var folder = ''
+if(fs.existsSync("./www")) {
+  folder = "www/"
+}
+var serve = serveStatic('./'+folder, {'index': ['index.html', 'index.htm']});
 var mockCordvaJS = ''
 mockCordvaJS += 'var socket = io(location.origin);'
 mockCordvaJS += 'socket.on("reload", function (data) { ';
@@ -29,7 +33,7 @@ module.exports = {
         res.end();
       } else if(req.url === '/' || req.url === '/index.html'){
         var done = finalhandler(req, res)
-        fs.readFile('./www/index.html', function (err, buf) {
+        fs.readFile('./'+folder+'index.html', function (err, buf) {
           if (err) return done(err)
           res.setHeader('Content-Type', 'text/html')
           var html = buf.toString();
@@ -49,7 +53,7 @@ module.exports = {
     io.on('connection', function (socket) {
 
     });
-    require('chokidar').watch('./www', {ignored: /[\/\\]\./}).on('all', function(event, path) {
+    require('chokidar').watch('./'+folder, {ignored: /[\/\\]\./}).on('all', function(event, path) {
       io.sockets.emit('reload', { event: event, path:path });
     });
   }
