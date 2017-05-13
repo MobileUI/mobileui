@@ -41,7 +41,7 @@ module.exports = {
     install: function(componentName, callback){
       var self = this;
       var headerRequest = { uri: repoComponents+componentName+'.json', rejectUnauthorized: false }
-      request(repoComponents+componentName+'.json', function (error, response, body) {
+      request(headerRequest, function (error, response, body) {
         if(response && response.statusCode === 200) {
           var componentJson = JSON.parse(body);
           var installedMessage = component.checkInstalled(componentName)
