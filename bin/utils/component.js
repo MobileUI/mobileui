@@ -95,7 +95,9 @@ module.exports = {
           callback('The sources this component not exist.')
         } else {
           var index = fs.readFileSync("."+folder+"/index.html", "utf8")
+          var config = fs.readFileSync("./config.xml", "utf8")
           var changeIndex = false;
+          var changeConfig = false;
           if(css && index && index.indexOf('mobileui/style.css') < 0){
             changeIndex=true
             index = index.replace('<head>','<head>\n    <link rel="stylesheet" type="text/css" href="mobileui/style.css">')
@@ -111,6 +113,15 @@ module.exports = {
           if(changeIndex) {
             fs.writeFileSync("."+folder+"/index.html",index)
             var msg = "> Import of mobileui inserted in ."+folder+"/index.html";
+            console.log(msg.grey)
+          }
+          if(config && config.indexOf('DisallowOverscroll') < 0){
+            changeConfig=true
+            config = config.replace('<content src="index.html" />','<content src="index.html" />\n    <preference name="DisallowOverscroll" value="true" />')
+          }
+          if(changeConfig) {
+            fs.writeFileSync("./config.xml",config)
+            var msg = "> Config.xml updated to use mobileui.";
             console.log(msg.grey)
           }
           if(comp.files && comp.files.length){
