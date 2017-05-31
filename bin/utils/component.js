@@ -95,7 +95,10 @@ module.exports = {
           callback('The sources this component not exist.')
         } else {
           var index = fs.readFileSync("."+folder+"/index.html", "utf8")
-          var config = fs.readFileSync("./config.xml", "utf8")
+          var config = "";
+          if (fs.existsSync("./config.xml")){
+              config = fs.readFileSync("./config.xml", "utf8");
+          }
           var changeIndex = false;
           var changeConfig = false;
           if(css && index && index.indexOf('mobileui/style.css') < 0){
