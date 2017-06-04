@@ -37,7 +37,7 @@ module.exports = {
           if (err) return done(err)
           res.setHeader('Content-Type', 'text/html')
           var html = buf.toString();
-          html = html.replace('</head>','<script src="/socket.io/socket.io.js"></script><script  type="text/javascript" src="https://raw.githubusercontent.com/MobileUI/mobileui/master/mock/cordova.js"></script></head>');
+          html = html.replace('</head>','<script src="/socket.io/socket.io.js"></script><script  type="text/javascript" src="https://rawgit.com/MobileUI/mobileui/master/mock/cordova.js"></script></head>');
           res.end(html)
         })
       } else {
