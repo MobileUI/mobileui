@@ -1,6 +1,7 @@
 var project = require('../utils/project');
 var component = require('../utils/component');
 var getfont = require('../utils/getfont');
+var template = require('../utils/template');
 var request = require('request');
 
 module.exports = {
@@ -24,6 +25,16 @@ module.exports = {
           }
           var fontName = commands._[2]
           getfont.install(fontName)
+        } else if(componentName === 'template') {
+          if(commands._.length !== 3){
+            console.log(" ERROR: ".bgRed, "To install a template you need to pass the name of template after the template command.")
+            console.log("If you need help see de doc: https://mobileui.github.io/#template-apache-cordova".grey)
+            return false
+          }
+          var templateName = commands._[2]
+          template.install(templateName, function(){
+            console.log(" SUCCESS: ".bgGreen,"Template "+templateName+" installed success!")
+          })
         } else {
           self.install(componentName, function(){
             indexComponent++;
