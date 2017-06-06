@@ -53,6 +53,9 @@ window.sqlitePlugin = {
     if(!p.description) p.description = 'MockDB';
     if(!p.size) p.size = -1;
     return window.openDatabase(p.name, p.version, p.description, p.size);
+  },
+  deleteDatabase: function(p, successcb, errorcb){
+    errorcb('This feature only works on the native device. On the web delete your database via settings.')
   }
 }
 
