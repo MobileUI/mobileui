@@ -25,7 +25,7 @@ window.device = {
 }
 
 navigator.app = {
-  exitApp = function(){
+  exitApp : function(){
     location.reload();
   }
 }
