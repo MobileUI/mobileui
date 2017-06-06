@@ -1,6 +1,6 @@
 {
   "name": "mobileui",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "MobileUI is a simple and easy NPM package to install UI Components for web mobile apps using HTML, CSS and JavaScript.",
   "main": "./bin/mobileui",
   "scripts": {
