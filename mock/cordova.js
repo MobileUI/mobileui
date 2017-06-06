@@ -23,3 +23,9 @@ window.device = {
   isVirtual : false,
   serial : "00001"
 }
+
+navigator.app = {
+  exitApp = function(){
+    location.reload();
+  }
+}
