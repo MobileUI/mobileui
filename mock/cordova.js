@@ -24,8 +24,23 @@ window.device = {
   serial : "00001"
 }
 
+window.Connection = {
+  UNKNOWN : 'unknown',
+  ETHERNET : 'ethernet',
+  WIFI : 'wifi',
+  CELL_2G : '2G',
+  CELL_3G : '3G',
+  CELL_4G : '4G',
+  CELL : 'cell',
+  NONE : 'none'
+}
+
 navigator.app = {
   exitApp : function(){
     location.reload();
   }
+}
+
+navigator.connection = {
+  type: window.Connection.WIFI
 }
