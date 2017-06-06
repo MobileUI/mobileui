@@ -44,3 +44,17 @@ navigator.app = {
 navigator.connection = {
   type: window.Connection.WIFI
 }
+
+window.sqlitePlugin = {
+  openDatabase : function(p){
+    if(!p) p = {};
+    if(!p.name) p.name = 'mockdb';
+    if(!p.version) p.version = '1.0';
+    if(!p.description) p.description = 'MockDB';
+    if(!p.size) p.size = -1;
+    return window.openDatabase(p.name, p.version, p.description, p.size);
+  }
+}
+
+var customEvent = new CustomEvent("deviceready",{ "detail": "MOCK"});
+document.dispatchEvent(customEvent);
