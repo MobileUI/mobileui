@@ -31,7 +31,8 @@
     "minimist": "^1.2.0",
     "request": "^2.75.0",
     "serve-static": "^1.12.1",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "unzip": "^0.1.11"
   },
   "bin": {
     "mobileui": "./bin/mobileui"
