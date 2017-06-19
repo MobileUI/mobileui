@@ -8,6 +8,10 @@ module.exports = {
 
   install: function(envName, callback){
     var self = this;
+    var res = {
+      javaInstalled:false,
+      androidInstalled:false
+    }
     if(envName != 'android'){
       console.log(" ERROR: ".bgRed, "In this version of mobileui it is only possible to install the environment for android.");
     } else if(process.platform != 'win32') {
@@ -15,9 +19,11 @@ module.exports = {
     } else if(process.arch != 'x64') {
       console.log(" ERROR: ".bgRed, "In this version of mobileui it is only possible to install the environment for android in x64.");
     } else {
-      self.checkAndinstallJava(envName, function(){
-        self.checkAndinstallAndroid(envName, function(){
-
+      self.checkAndinstallJava(envName, function(resJava){
+        res.javaInstalled = resJava;
+        self.checkAndinstallAndroid(envName, function(resAndroid){
+          res.androidInstalled = resAndroid;
+          callback(res);
         });
       });
       //var javajdk = execSync('node -v');
@@ -57,7 +63,7 @@ module.exports = {
               self.downloadZip(url_java_repo, path_java, 'lib.zip', self.errorNotInstalledJava, function(){
                 console.log(">> Downloaded lib...".grey);
                 console.log(" SUCCESS: ".bgGreen,"Java JDK installed success, you need set environment variable JAVA_HOME="+path_java)
-                callback();
+                callback(true);
               })
             })
           })
@@ -69,7 +75,7 @@ module.exports = {
     console.log(" ERROR: ".bgRed, "Java JDK not installed.");
     console.log(e);
   },
-  checkAndinstallAndroid: function(){
+  checkAndinstallAndroid: function(envName, callback){
     var self = this;
     var url_android_repo = "https://github.com/MobileUI/android-sdk/raw/master/";
     url_android_repo += process.platform + '/' + process.arch;
@@ -92,24 +98,18 @@ module.exports = {
         console.log(" ERROR: ".bgRed, "Android SDK not installed.");
         console.log(e);
       }
-      self.downloadZip(url_android_repo, path_android, 'add-ons.zip',  self.errorNotInstalledAndroid, function(){
-        console.log(">> Downloaded add-ons...".grey);
-        self.downloadZip(url_android_repo, path_android, 'build-tools.zip', self.errorNotInstalledAndroid, function(){
-          console.log(">> Downloaded build-tools...".grey);
-          self.downloadZip(url_android_repo, path_android, 'extras.zip', self.errorNotInstalledAndroid, function(){
-            console.log(">> Downloaded extras...".grey);
+      self.downloadZip(url_android_repo, path_android, 'build-tools.zip',  self.errorNotInstalledAndroid, function(){
+        console.log(">> Downloaded build-tools...".grey);
+        self.downloadZip(url_android_repo, path_android, 'extras.zip', self.errorNotInstalledAndroid, function(){
+          console.log(">> Downloaded extras...".grey);
+          self.downloadZip(url_android_repo, path_android, 'platform-tools.zip', self.errorNotInstalledAndroid, function(){
+            console.log(">> Downloaded platform-tools...".grey);
             self.downloadZip(url_android_repo, path_android, 'platforms.zip', self.errorNotInstalledAndroid, function(){
               console.log(">> Downloaded platforms...".grey);
-              self.downloadZip(url_android_repo, path_android, 'platform-tools.zip', self.errorNotInstalledAndroid, function(){
-                console.log(">> Downloaded platform-tools...".grey);
-                self.downloadZip(url_android_repo, path_android, 'sources.zip', self.errorNotInstalledAndroid, function(){
-                  console.log(">> Downloaded sources...".grey);
-                  self.downloadZip(url_android_repo, path_android, 'tools.zip', self.errorNotInstalledAndroid, function(){
-                    console.log(">> Downloaded tools...".grey);
-                    console.log(" SUCCESS: ".bgGreen,"Android SDK installed success, you need set environment variable ANDROID_HOME="+path_android)
-                    callback();
-                  })
-                })
+              self.downloadZip(url_android_repo, path_android, 'tools.zip', self.errorNotInstalledAndroid, function(){
+                console.log(">> Downloaded tools...".grey);
+                console.log(" SUCCESS: ".bgGreen,"Android SDK installed success, you need set environment variable ANDROID_HOME="+path_android)
+                callback();
               })
             })
           })

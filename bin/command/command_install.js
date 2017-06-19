@@ -43,8 +43,8 @@ module.exports = {
             return false
           }
           var envName = commands._[2]
-          environment.install(envName, function(){
-            console.log(" SUCCESS: ".bgGreen,"Environment "+envName+" installed success!")
+          environment.install(envName, function(res){
+            
           })
         } else {
           self.install(componentName, function(){
