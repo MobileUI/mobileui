@@ -65,11 +65,13 @@ window.sqlitePlugin = {
   }
 }
 
-var customEvent = new CustomEvent("deviceready",{ "detail": "MOCK"});
-document.dispatchEvent(customEvent);
+setTimeout(function(){
+  var customEvent = new CustomEvent("deviceready",{ "detail": "MOCK"});
+  document.dispatchEvent(customEvent);
 
-var customEventBatteryStatus = new CustomEvent("batterystatus");
-customEventBatteryStatus.level  = 46;
-customEventBatteryStatus.isPlugged  = true;
+  var customEventBatteryStatus = new CustomEvent("batterystatus");
+  customEventBatteryStatus.level  = 46;
+  customEventBatteryStatus.isPlugged  = true;
 
-window.dispatchEvent(customEventBatteryStatus);
+  window.dispatchEvent(customEventBatteryStatus);
+}, 200);
