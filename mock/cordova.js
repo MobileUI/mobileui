@@ -61,3 +61,9 @@ window.sqlitePlugin = {
 
 var customEvent = new CustomEvent("deviceready",{ "detail": "MOCK"});
 document.dispatchEvent(customEvent);
+
+var customEventBatteryStatus = new CustomEvent("batterystatus");
+customEventBatteryStatus.level  = 46;
+customEventBatteryStatus.isPlugged  = true;
+
+window.dispatchEvent(customEventBatteryStatus);
