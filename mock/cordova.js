@@ -68,14 +68,14 @@ navigator.geolocation = {
   getCurrentPosition: function(geolocationSuccess){
     geolocationSuccess({
       coords : {
-        latitude : -23.4375745
-        longitude : -51,9125699
-        altitude : 1
-        accuracy : 1
-        altitudeAccuracy : 1
-        heading : 1
+        latitude : -23.4375745,
+        longitude : -51.9125699,
+        altitude : 1,
+        accuracy : 1,
+        altitudeAccuracy : 1,
+        heading : 1,
         speed : 1
-      }
+      },
       timestamp: new Date().getTime()
     })
   }
