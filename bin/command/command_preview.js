@@ -45,7 +45,7 @@ module.exports = {
       }
     });
     server.listen(DEFAULT_HTTP_PORT, function(a){
-      console.log(" RUNNING: ".bgGreen,"Server for preview app running on port "+DEFAULT_HTTP_PORT);
+      console.log(" RUNNING: ".bgGreen,"Server for preview app running on http://localhost:"+DEFAULT_HTTP_PORT);
       console.log("For stop this server hit Ctrl+C.".grey)
     });
 
