@@ -4,7 +4,6 @@ var getfont = require('../utils/getfont')
 var template = require('../utils/template')
 var environment = require('../utils/environment')
 var request = require('request')
-const isOnline = require('is-online')
 
 module.exports = {
   run: function () {
@@ -60,90 +59,92 @@ module.exports = {
 
     installComponents()
   },
-  install: async function (componentName, callback) {
-    if (await isOnline()) {
-      var self = this
-      var headerRequest = { uri: repoComponents + componentName + '.json', rejectUnauthorized: false }
-      request(headerRequest, function (error, response, body) {
-        if (response && response.statusCode === 200) {
-          var componentJson = JSON.parse(body)
-          var installedMessage = component.checkInstalled(componentName)
-          if (!commands.update && installedMessage) {
-            console.log(' EXIST: '.bgBlue, 'The component ', componentName, ' has already been installed!')
-            console.log('If you need reinstall put --update in command.'.grey)
-            callback()
-            return false
-          }
-          component.install(componentJson, function (err) {
-            if (err) {
-              console.log(' ERROR: '.bgRed, 'Sorry, the component could not be installed at this time.\n', err)
+  install: function (componentName, callback) {
+    require('dns').resolve('www.google.com', function (err) {
+      if (!err) {
+        var self = this
+        var headerRequest = { uri: repoComponents + componentName + '.json', rejectUnauthorized: false }
+        request(headerRequest, function (error, response, body) {
+          if (response && response.statusCode === 200) {
+            var componentJson = JSON.parse(body)
+            var installedMessage = component.checkInstalled(componentName)
+            if (!commands.update && installedMessage) {
+              console.log(' EXIST: '.bgBlue, 'The component ', componentName, ' has already been installed!')
+              console.log('If you need reinstall put --update in command.'.grey)
               callback()
               return false
             }
-            if (installedMessage) {
-              console.log(' SUCCESS: '.bgYellow, 'Component ' + componentName + ' updated success!')
-            } else {
-              console.log(' SUCCESS: '.bgGreen, 'Component ' + componentName + ' installed success!')
-            }
-            if (componentJson.dependencies && componentJson.dependencies.length) {
-              console.log('> Installing dependent components...'.grey)
-              var totalDependencies = componentJson.dependencies.length
-              var totalDownloaded = 0
-              var installDependency = function () {
-                var compInstallDepName = componentJson.dependencies[totalDownloaded]
-                var installedMessage = component.checkInstalled(compInstallDepName)
-                if (!commands.update && installedMessage) {
-                  var msg = '> The component ' + compInstallDepName + ' has already been installed!'
-                  console.log(msg.grey)
-                  totalDownloaded++
-                  if (totalDependencies === totalDownloaded) {
-                    callback()
+            component.install(componentJson, function (err) {
+              if (err) {
+                console.log(' ERROR: '.bgRed, 'Sorry, the component could not be installed at this time.\n', err)
+                callback()
+                return false
+              }
+              if (installedMessage) {
+                console.log(' SUCCESS: '.bgYellow, 'Component ' + componentName + ' updated success!')
+              } else {
+                console.log(' SUCCESS: '.bgGreen, 'Component ' + componentName + ' installed success!')
+              }
+              if (componentJson.dependencies && componentJson.dependencies.length) {
+                console.log('> Installing dependent components...'.grey)
+                var totalDependencies = componentJson.dependencies.length
+                var totalDownloaded = 0
+                var installDependency = function () {
+                  var compInstallDepName = componentJson.dependencies[totalDownloaded]
+                  var installedMessage = component.checkInstalled(compInstallDepName)
+                  if (!commands.update && installedMessage) {
+                    var msg = '> The component ' + compInstallDepName + ' has already been installed!'
+                    console.log(msg.grey)
+                    totalDownloaded++
+                    if (totalDependencies === totalDownloaded) {
+                      callback()
+                    } else {
+                      installDependency()
+                    }
                   } else {
-                    installDependency()
-                  }
-                } else {
-                  var headerRequest = { uri: repoComponents + compInstallDepName + '.json', rejectUnauthorized: false }
-                  request(headerRequest, function (error, response, body) {
-                    if (response && response.statusCode === 200) {
-                      var componentJsonDep = JSON.parse(body)
-                      component.install(componentJsonDep, function (err) {
-                        if (err) return console.log(' ERROR: '.bgRed, 'Sorry, the component could not be installed at this time.\n', err)
-                        if (installedMessage) {
-                          console.log(' SUCCESS: '.bgYellow, 'Component ' + compInstallDepName + ' updated success!')
-                        } else {
-                          console.log(' SUCCESS: '.bgGreen, 'Component ' + compInstallDepName + ' installed success!')
-                        }
+                    var headerRequest = { uri: repoComponents + compInstallDepName + '.json', rejectUnauthorized: false }
+                    request(headerRequest, function (error, response, body) {
+                      if (response && response.statusCode === 200) {
+                        var componentJsonDep = JSON.parse(body)
+                        component.install(componentJsonDep, function (err) {
+                          if (err) return console.log(' ERROR: '.bgRed, 'Sorry, the component could not be installed at this time.\n', err)
+                          if (installedMessage) {
+                            console.log(' SUCCESS: '.bgYellow, 'Component ' + compInstallDepName + ' updated success!')
+                          } else {
+                            console.log(' SUCCESS: '.bgGreen, 'Component ' + compInstallDepName + ' installed success!')
+                          }
+                          totalDownloaded++
+                          if (totalDependencies === totalDownloaded) {
+                            callback()
+                          } else {
+                            installDependency()
+                          }
+                        })
+                      } else {
+                        console.log(' ERROR: '.bgRed, 'Component ' + componentJson.dependencies[totalDownloaded] + ' not exist.')
                         totalDownloaded++
                         if (totalDependencies === totalDownloaded) {
                           callback()
                         } else {
                           installDependency()
                         }
-                      })
-                    } else {
-                      console.log(' ERROR: '.bgRed, 'Component ' + componentJson.dependencies[totalDownloaded] + ' not exist.')
-                      totalDownloaded++
-                      if (totalDependencies === totalDownloaded) {
-                        callback()
-                      } else {
-                        installDependency()
                       }
-                    }
-                  })
+                    })
+                  }
                 }
+                installDependency()
+              } else {
+                callback()
               }
-              installDependency()
-            } else {
-              callback()
-            }
-          })
-        } else {
-          console.log(' ERROR: '.bgRed, 'Component ' + componentName + ' not exist.')
-          callback()
-        }
-      })
-    } else {
-      console.log(' ERROR: '.bgRed, 'You must be connected with the outside world.')
-    }
+            })
+          } else {
+            console.log(' ERROR: '.bgRed, 'Component ' + componentName + ' not exist.')
+            callback()
+          }
+        })
+      } else {
+        console.log(' ERROR: '.bgRed, 'You must be connected with the outside world.')
+      }
+    })
   }
 }

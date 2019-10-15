@@ -28,7 +28,6 @@
     "chokidar": "^1.6.1",
     "colors": "^1.1.2",
     "finalhandler": "^1.0.2",
-    "is-online": "^8.2.0",
     "minimist": "^1.2.0",
     "request": "^2.75.0",
     "serve-static": "^1.12.1",
