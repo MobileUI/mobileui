@@ -92,30 +92,37 @@ module.exports = {
 		    headers: {
 		        'User-Agent': typeFont
 		    },
+        download: true,
 		    encoding: null
 		};
 		request(options, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
-  			fs.writeFile(dirFileFont+"/"+newLink, body, function(err) {
-  			    if(err) {
-  			        return console.log(err);
-  			    }
-  			    console.log(" SUCCESS: ".bgGreen,"Font "+newLink+" installed success!")
-  			    cssString = cssString.replace(link, "./fonts/"+newLink);
-    				if(cssString.indexOf('url(https') < 0){
-              fs.writeFile(nameCssFont, cssString, function(err) {
-          		    if(err) {
-                      console.log(" ERROR: ".bgRed, "Could not install font.")
-          		        return console.log(err);
-          		    }
-                  var msg = "> Create css file: "+nameCssFont;
-                  console.log(msg.grey)
-          		    self.posScript();
-          		});
-    				} else {
-    					self.checkAndDownloadFont(cssString, nameFont);
-    				}
-  			});
+
+        response.data.pipe(fs.createWriteStream(dirFileFont+"/"+newLink))
+        .on('close', function (err) {
+          if(err) {
+            return console.log(err);
+          }
+          console.log(" SUCCESS: ".bgGreen,"Font "+newLink+" installed success!")
+          cssString = cssString.replace(link, "./fonts/"+newLink);
+          if(cssString.indexOf('url(https') < 0){
+            fs.writeFile(nameCssFont, cssString, function(err) {
+                if(err) {
+                    console.log(" ERROR: ".bgRed, "Could not install font.")
+                    return console.log(err);
+                }
+                var msg = "> Create css file: "+nameCssFont;
+                console.log(msg.grey)
+                self.posScript();
+            });
+          } else {
+            self.checkAndDownloadFont(cssString, nameFont);
+          }
+        })
+
+  			// fs.writeFile(dirFileFont+"/"+newLink, body, function(err) {
+  			    
+  			// });
 		  } else {
 		  	if(response.statusCode == 404){
 		  		console.log("Error get font: URL font source does not exist! ".red);
