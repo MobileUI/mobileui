@@ -30,7 +30,7 @@ module.exports = {
         }
         var templateName = commands._[2]
         template.install(templateName, function () {
-          console.log(' SUCCESS: '.bgGreen, 'Template ' + templateName + ' installed success!')
+          console.log(' SUCCESS: '.black.bgGreen, 'Template ' + templateName + ' installed success!')
         })
       } else if (componentName === 'env') {
         if (commands._.length !== 3) {
@@ -62,7 +62,7 @@ module.exports = {
         var headerRequest = { uri: repoComponents + componentName + '.json', rejectUnauthorized: false }
         request(headerRequest, function (error, response, body) {
           if (response && response.statusCode === 200) {
-            var componentJson = JSON.parse(body)
+            var componentJson = body
             var installedMessage = component.checkInstalled(componentName)
             if (!commands.update && installedMessage) {
               console.log(' EXIST: '.bgBlue, 'The component ', componentName, ' has already been installed!')
@@ -79,7 +79,7 @@ module.exports = {
               if (installedMessage) {
                 console.log(' SUCCESS: '.bgYellow, 'Component ' + componentName + ' updated success!')
               } else {
-                console.log(' SUCCESS: '.bgGreen, 'Component ' + componentName + ' installed success!')
+                console.log(' SUCCESS: '.black.bgGreen, 'Component ' + componentName + ' installed success!')
               }
               if (componentJson.dependencies && componentJson.dependencies.length) {
                 console.log('> Installing dependent components...'.grey)
@@ -101,13 +101,13 @@ module.exports = {
                     var headerRequest = { uri: repoComponents + compInstallDepName + '.json', rejectUnauthorized: false }
                     request(headerRequest, function (error, response, body) {
                       if (response && response.statusCode === 200) {
-                        var componentJsonDep = JSON.parse(body)
+                        var componentJsonDep = body
                         component.install(componentJsonDep, function (err) {
                           if (err) return console.log(' ERROR: '.bgRed, 'Sorry, the component could not be installed at this time.\n', err)
                           if (installedMessage) {
                             console.log(' SUCCESS: '.bgYellow, 'Component ' + compInstallDepName + ' updated success!')
                           } else {
-                            console.log(' SUCCESS: '.bgGreen, 'Component ' + compInstallDepName + ' installed success!')
+                            console.log(' SUCCESS: '.black.bgGreen, 'Component ' + compInstallDepName + ' installed success!')
                           }
                           totalDownloaded++
                           if (totalDependencies === totalDownloaded) {

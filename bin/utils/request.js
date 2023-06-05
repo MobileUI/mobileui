@@ -11,7 +11,7 @@ module.exports = function (options, callback) {
   
   axiosGet.then(function(response) {
     response.statusCode = response.status
-    callback(null, response, JSON.stringify(response.data))
+    callback(null, response, response.data)
   })
   .catch(function (error) {
     callback(error)

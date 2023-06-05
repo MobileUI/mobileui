@@ -12,7 +12,7 @@ module.exports = {
     var headerRequest = { uri: repoTemplates+templateName+'/template.json', rejectUnauthorized: false }
     request(headerRequest, function (error, response, body) {
       if(response && response.statusCode === 200) {
-        var temp = JSON.parse(body);
+        var temp = body
         if(temp.files && temp.files.length){
           var totalFiles = temp.files.length;
           var filesDownloaded = 0;
