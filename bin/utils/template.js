@@ -26,16 +26,27 @@ module.exports = {
             var msgDown = "> File "+temp.files[filesDownloaded]+" downloaded";
             console.log(msgDown.grey)
             var headerRequest = { uri: repoTemplates+templateName+'/'+temp.files[filesDownloaded], rejectUnauthorized: false }
-            var req = request(headerRequest)
-            .pipe(fs.createWriteStream("."+folder+"/"+temp.files[filesDownloaded]))
-            .on('close', function (err) {
+            request(headerRequest, function (err, response, body) {
+              fs.writeFileSync("."+folder+"/"+temp.files[filesDownloaded], response.data);
               filesDownloaded++;
               if(totalFiles === filesDownloaded) {
                 callback();
               } else {
                 download();
               }
+
+              // response.data.pipe(fs.createWriteStream("."+folder+"/"+temp.files[filesDownloaded]))
+              // .on('close', function (err) {
+              //   filesDownloaded++;
+              //   if(totalFiles === filesDownloaded) {
+              //     callback();
+              //   } else {
+              //     download();
+              //   }
+              // })
+
             })
+            
           }
           download();
         } else {
