@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
-var request = require('request');
-var unzip = require('unzip');
+var request = require('../utils/request');
+var unzip = require('unzipper');
 const execSync = require('child_process').execSync;
 
 module.exports = {

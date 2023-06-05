@@ -1,6 +1,4 @@
 var fs = require('fs')
-var project = require('../utils/project')
-var component = require('../utils/component')
 var finalhandler = require('finalhandler')
 var http = require('http')
 var serveStatic = require('serve-static')

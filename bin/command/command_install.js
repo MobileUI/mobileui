@@ -1,16 +1,12 @@
-var project = require('../utils/project')
 var component = require('../utils/component')
 var getfont = require('../utils/getfont')
 var template = require('../utils/template')
 var environment = require('../utils/environment')
-var request = require('request')
+var request = require('../utils/request')
 
 module.exports = {
   run: function () {
     var self = this
-    // if(!project.checkIntoProject()) {
-    //   return console.log(" ERROR: ".bgRed, "You are not in the folder of a Cordova project.")
-    // }
     if (commands._.length < 2) {
       return console.log(' ERROR: '.bgRed, 'You must enter the name of the component.')
     }

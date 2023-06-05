@@ -1,5 +1,5 @@
 var fs = require('fs');
-var request = require('request');
+var request = require('../utils/request');
 
 module.exports = {
 

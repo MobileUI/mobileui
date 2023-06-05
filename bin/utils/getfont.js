@@ -1,5 +1,5 @@
 var fs = require('fs');
-var request = require('request');
+var request = require('../utils/request');
 
 var typeFont = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36'
 

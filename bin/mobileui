@@ -3,7 +3,6 @@
 var colors = require('colors')
 var fs = require('fs')
 var argv = require('minimist')(process.argv.slice(2))
-var request = require('request')
 var packageJson = require('../package.json')
 
 global.repoComponents = 'https://raw.githubusercontent.com/MobileUI/components/master/dist/'
