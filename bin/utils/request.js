@@ -1,8 +1,15 @@
 const axios = require('axios');
 
 module.exports = function (options, callback) {
-  axios.get(options.uri)
-  .then(function(response) {
+  var axiosGet = axios.get(options.uri || options.url)
+
+  // if(options.headers) {
+  //   var axiosGet = axios.get(options.uri, {
+  //     headers: options.headers
+  //   })
+  // }
+  
+  axiosGet.then(function(response) {
     response.statusCode = response.status
     callback(null, response, JSON.stringify(response.data))
   })

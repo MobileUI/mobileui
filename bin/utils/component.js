@@ -138,9 +138,8 @@ module.exports = {
                 }
               }
               var headerRequest = { uri: repoComponents+comp.files[filesDownloaded], rejectUnauthorized: false }
-              var req = request(headerRequest)
-              .pipe(fs.createWriteStream("."+folder+"/mobileui/"+comp.files[filesDownloaded]))
-              .on('close', function (err) {
+              request(headerRequest, function (err, response, body) {
+                fs.writeFileSync("."+folder+"/mobileui/"+comp.files[filesDownloaded], response.data);
                 filesDownloaded++;
                 if(totalFiles === filesDownloaded) {
                   console.log("> Files dependencies downloaded".grey)
@@ -149,7 +148,19 @@ module.exports = {
                   download();
                 }
               })
+              
+              // .pipe(fs.createWriteStream("."+folder+"/mobileui/"+comp.files[filesDownloaded]))
+              // .on('close', function (err) {
+              //   filesDownloaded++;
+              //   if(totalFiles === filesDownloaded) {
+              //     console.log("> Files dependencies downloaded".grey)
+              //     callback();
+              //   } else {
+              //     download();
+              //   }
+              // })
             }
+
             download();
           } else {
               callback()
