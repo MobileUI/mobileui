@@ -22,7 +22,7 @@ With Node.js installed, run in your terminal:
 | `mobileui install [NAME_COMPONENT]` | Install one or more component. |
 | `mobileui install font [GOOGLE_FONT_NAME]` | Install font from Google Fonts repository. |
 | `mobileui install template [NAME_TEMPLATE]` | Install a template to your project. |
-| `mobileui install preview` | Emulate your app in your browser and provide some mocks for plugins by Apache Cordova. |
+| `mobileui preview` | Emulate your app in your browser and provide some mocks for plugins by Apache Cordova. |
 
 Links
 ---------------
